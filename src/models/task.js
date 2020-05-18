@@ -11,8 +11,9 @@ const Task = mongoose.model('Task', {
     }
 })
 
-const task = new Task({
-    description: 'Learn the Mongoose library',
-    completed: false,
-})
+// const task = new Task({
+//     description: 'Learn the Mongoose library',
+//     completed: false,
+// })
 
+module.exports = Task
