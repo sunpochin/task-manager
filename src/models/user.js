@@ -54,7 +54,10 @@ userSchema.methods.generateAuthToken = async function() {
     const user = this
     const token = jwt.sign({_id: user._id }, 'thisismynewcourse')
 
-    console.log('user.tokens: ', user.tokens)
+    const decoded = jwt.verify(token ,'thisismynewcourse')
+    // console.log('decoded: ', decoded)
+
+//    console.log('user.tokens: ', user.tokens)
     user.tokens = user.tokens.concat({ token: token})
     await user.save()
 

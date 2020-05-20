@@ -1,5 +1,7 @@
 const express = require('express')
 const User = require('../models/user')
+const auth = require('../middleware/auth')
+
 const router = new express.Router()
 
 router.get('/test', (req, res) => {
@@ -20,33 +22,58 @@ router.post('/users/login', async (req, res) => {
 })
 
 
-router.post('/users', async (req, res) => {
-//    console.log('post users req: ', req)
-    const user = new User(req.body)
-
+router.post('/users/logout', auth, async (req, res) => {
+    console.log('logout, req.user.token: ', req.user.token)
     try {
-        await user.save()
-
-        const token = await user.generateAuthToken()
-        res.status(201).send( {user, token} )
-
-        // res.status(201).send(user)
+        req.user.tokens = req.user.tokens.filter((token) => {
+            // if they are equal (token of the logged in device),
+            // return false, filtering it out, removing it. 
+            // console.log('token.token: ', token.token)
+            // console.log('req.user.token: ', req.token)
+            const thebool = (token.token !== req.token)
+            // console.log('thebool: ', thebool)
+            return thebool
+        })
+        await req.user.save()
+        
+//        console.log('req.user.tokens : ', req.user.tokens)
+        res.send()
     } catch (e) {
-        console.log('post users e: ', e)
-        res.status(400).send(e)
-    }
+        res.status(500).send('logout token error: ', e)
+     }
 })
 
-router.get('/users', async (req, res) => {
-//    console.log('get users req: ', req)
-    try {
-        const users = await User.find({})
-        res.send(users)
-    } catch (e) {
-        console.log('get users e: ', e)
-        res.send(e)
-//        res.status(500).send()
-    }
+
+router.post('/users', async (req, res) => {
+    //    console.log('post users req: ', req)
+        const user = new User(req.body)
+    
+        try {
+            await user.save()
+    
+            const token = await user.generateAuthToken()
+            res.status(201).send( {user, token} )
+    
+            // res.status(201).send(user)
+        } catch (e) {
+            console.log('post users e: ', e)
+            res.status(400).send(e)
+        }
+    })
+    
+
+
+router.get('/users/me', auth, async (req, res) => {
+    res.send(req.user)
+// //    console.log('get users req: ', req)
+//     try {
+//         const users = await User.find({})
+//         res.send(users)
+//     } catch (e) {
+//         console.log('get users e: ', e)
+//         res.send(e)
+// //        res.status(500).send()
+//     }
 })
 
 router.get('/users/:id', async (req, res) => {
