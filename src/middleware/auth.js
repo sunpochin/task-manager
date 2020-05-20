@@ -8,11 +8,13 @@ const auth = async (req, res, next) => {
         console.log('auth, token: ', token)
         const decoded = jwt.verify(token, 'thisismynewcourse')
         console.log('auth, decoded: ', decoded)
-        const user = await User.findOne({_id: decoded._id})
+        const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
         if (!user) {
             throw new Error()
         }
+        req.token = token
         req.user = user
+
         console.log('auth user id: ', user.email)
         next()
     } catch (e) {

@@ -23,7 +23,7 @@ router.post('/users/login', async (req, res) => {
 
 
 router.post('/users/logout', auth, async (req, res) => {
-    console.log('logout, req.user.token: ', req.user.token)
+    console.log('logout, req.token: ', req.token)
     try {
         req.user.tokens = req.user.tokens.filter((token) => {
             // if they are equal (token of the logged in device),
@@ -36,7 +36,7 @@ router.post('/users/logout', auth, async (req, res) => {
         })
         await req.user.save()
         
-//        console.log('req.user.tokens : ', req.user.tokens)
+        console.log('req.user.tokens : ', req.user.tokens)
         res.send()
     } catch (e) {
         res.status(500).send('logout token error: ', e)
