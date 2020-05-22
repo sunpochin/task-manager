@@ -85,6 +85,12 @@ userSchema.statics.findbyCredentials = async (email, password) => {
     return user
 }
 
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
 userSchema.pre('save', async function (next) {
     const user = this
 
