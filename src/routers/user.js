@@ -80,6 +80,20 @@ router.delete('/users/me', auth, async (req, res) => {
     }
 })
 
+router.delete('/users/me/avatar', auth, async (req, res) => {
+    console.log('/users/me/avatar')
+
+    try {
+        req.user.avatar = undefined;
+        await req.user.save();
+        res.send(req.user)
+    } catch (e) {
+        res.status(500).send()
+    }
+
+})
+
+
 
 const upload = multer({
     limits: {
@@ -116,4 +130,6 @@ router.post('/users/me/avatar', auth, upload.single('avatarfile'),
 })
 
 
+
 module.exports = router
+
