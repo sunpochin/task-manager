@@ -47,7 +47,13 @@ const userSchema = new mongoose.Schema({
             type: String,
             required: true
         }
-    }]
+    }],
+    test: {
+        type: String
+    },
+    avatar: {
+        type: Buffer
+    }
 }, {
     timestamps: true
 })
