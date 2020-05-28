@@ -2,6 +2,8 @@ const express = require('express')
 const User = require('../models/user')
 const multer = require('multer')
 const auth = require('../middleware/auth')
+const sharp = require('sharp')
+const { sendWelcomeEmail, sendCancelationEmail } = require('../emails/account')
 const router = new express.Router()
 
 router.post('/users', async (req, res) => {
@@ -9,6 +11,7 @@ router.post('/users', async (req, res) => {
 
     try {
         await user.save()
+        sendWelcomeEmail(user.email, user.name)
         const token = await user.generateAuthToken()
         res.status(201).send({ user, token })
     } catch (e) {
@@ -85,6 +88,7 @@ router.delete('/users/me/avatar', auth, async (req, res) => {
 
     try {
         req.user.avatar = undefined;
+        sendCancelationEmail(user.email, user.name)
         await req.user.save();
         res.send(req.user)
     } catch (e) {
@@ -116,7 +120,10 @@ router.post('/users/me/avatar', auth, upload.single('avatarfile'),
     async (req, res) => {
     // console.log('req.file: ', req.file)
     try {
-        req.user.avatar = req.file.buffer
+        const buffer = await sharp(req.file.buffer)
+            .resize({width: 250, height: 250 }).png().toBuffer()
+        req.user.avatar = buffer
+        // req.user.avatar = req.file.buffer
         await req.user.save()
         res.send() 
     } catch (e) {
@@ -129,6 +136,27 @@ router.post('/users/me/avatar', auth, upload.single('avatarfile'),
     res.status(400).send({ error: error.message})
 })
 
+router.get('/users/:id/avatar', async(req, res) => {
+    console.log('/users/:id/avatar, ')
+    try {
+        console.log('req.params, ', req.params)
+        const user = await User.findById(req.params.id)
+        console.log('user, ', user)
+        if (!user || !user.avatar) {
+            console.log('user or avatar not found!!! ')
+            throw new Error('user or avatar not found!!! ')
+        }
+
+        console.log('user.avatar, ', user.avatar)
+        res.set('Content-Type', 'image/jpg')
+        res.send(user.avatar)
+        
+    } catch (error) {
+        console.log('error: ', error)
+
+        res.status(404).send(error)
+    }
+})
 
 
 module.exports = router
