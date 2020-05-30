@@ -10,7 +10,7 @@ const auth = async (req, res, next) => {
         console.log('auth, decoded: ', decoded)
         const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
         if (!user) {
-            throw new Error()
+            throw new Error('please auth')
         }
         req.token = token
         req.user = user
@@ -18,7 +18,9 @@ const auth = async (req, res, next) => {
         console.log('auth user id: ', user.email)
         next()
     } catch (e) {
-        res.status(401).send({error: e})
+        const errormsg = 'Error: ' + e
+//        console.log('e:', e)
+        res.status(401).send(errormsg)
 
     }
 
