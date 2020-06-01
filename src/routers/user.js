@@ -11,7 +11,9 @@ router.post('/users', async (req, res) => {
 
     try {
         await user.save()
-        sendWelcomeEmail(user.email, user.name)
+        const response = sendWelcomeEmail(user.email, user.name)
+        console.log('response:', response);
+
         const token = await user.generateAuthToken()
         res.status(201).send({ user, token })
     } catch (e) {
@@ -112,11 +114,8 @@ const upload = multer({
     }
 })
 
-// router.post('/users/me/avatar', upload.single('avatarfile'), 
-//    (req, res) => {
-//        res.send() 
 
-router.post('/users/me/avatar', auth, upload.single('avatarfile'), 
+router.post('/users/me/avatar', auth, upload.single('avatar'), 
     async (req, res) => {
     // console.log('req.file: ', req.file)
     try {

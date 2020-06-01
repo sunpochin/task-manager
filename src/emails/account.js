@@ -4,13 +4,14 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // using backtick `
 const sendWelcomeEmail = (email, name) => {
-    sgMail.send({
+    const response = sgMail.send({
         to: email,
         from: `sunpochin@gmail.com`,
         subject: 'Thanks for using!',
         text: `Welcome! ${name}. Let me know how you get along with this service.`
     })
-    console.log('sendWelcomeEmail: ', sgMail)
+    console.log('sendWelcomeEmail: ', response)
+    return response;
 }
 
 const sendCancelationEmail = (email, name) => {
