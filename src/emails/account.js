@@ -10,6 +10,7 @@ const sendWelcomeEmail = (email, name) => {
         subject: 'Thanks for using!',
         text: `Welcome! ${name}. Let me know how you get along with this service.`
     })
+    console.log('sendWelcomeEmail: ', sgMail)
 }
 
 const sendCancelationEmail = (email, name) => {
@@ -19,15 +20,9 @@ const sendCancelationEmail = (email, name) => {
         subject: 'Sorry to see you go...',
         text: `Goodbye, ${name}. See ya come back.`
     })
+    console.log('sendCancelationEmail: ', sgMail)
 }
 
-// //sgMail.send(msg)
-
-// sgMail.send(msg, function(error) {
-//     if (error) {
-//         console.error(error.message)
-//     }
-// })
 
 module.exports = {
     sendWelcomeEmail,
