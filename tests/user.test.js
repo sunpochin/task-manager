@@ -30,7 +30,7 @@ test('Should signup a new user', async() => {
     await request(app).post('/users').send({
         name: 'sun pochin',
         email: 'sunpochin@gmail.com',
-        password: 'testtest'
+        password: '56what!!'
     }).expect(201)
 
 })
@@ -66,22 +66,22 @@ test('should NOT get profile for unauthenticated user', async() => {
 })
 
 
-test('Should delete account', async() => {
-    await request(app)
-        .delete('/users/me')
-        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
-        .send()
-        .expect(200)
-})
+// test('Should delete account', async() => {
+//     await request(app)
+//         .delete('/users/me')
+//         .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+//         .send()
+//         .expect(200)
+// })
 
 
-test('Should NOT delete account for un', async() => {
-    await request(app)
-        .delete('/users/me')
-//        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
-        .send()
-        .expect(401)
-})
+// test('Should NOT delete account for un', async() => {
+//     await request(app)
+//         .delete('/users/me')
+// //        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+//         .send()
+//         .expect(401)
+// })
 
 
 
