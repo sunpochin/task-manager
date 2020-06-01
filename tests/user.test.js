@@ -1,26 +1,9 @@
 const request = require('supertest')
-const jwt = require('jsonwebtoken')
-const mongoose = require('mongoose')
 const app = require('../src/app')
 const User = require('../src/models/user')
+const { userOneId, userOne, setupDatabase} = require('./fixtures/db')
 
-const userOneId = new mongoose.Types.ObjectId()
-const userOne = {
-    _id: userOneId,
-    name: 'Mike',
-    email: 'mike@example.com',
-    password: '56what!!',
-    tokens: [{
-        token: jwt.sign({ _id: userOneId}, process.env.JWT_SECRET)
-    }]
-}
-
-
-beforeEach(async () => {
-    // console.log('before Each')
-    await User.deleteMany()
-    await new User(userOne).save()
-})
+beforeEach(setupDatabase)
 
 afterEach(() => {
     // console.log('after Each')
@@ -32,7 +15,6 @@ test('Should signup a new user', async() => {
         email: 'sunpochin@gmail.com',
         password: '56what!!'
     }).expect(201)
-
 
     // database changed correctly
     const user = await User.findById(response.body.user._id)
@@ -130,6 +112,7 @@ test('Should update valid user fields', async() => {
         const user = await User.findById(userOneId)
         expect(user.name).toEqual('Jess')
 })
+
 
 test('Should not update valid user fields', async() => {
     await request(app)
